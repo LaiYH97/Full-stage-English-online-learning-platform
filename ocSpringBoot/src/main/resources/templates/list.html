@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<title>Full - level English online learning platform</title>
+		
+		<#include "./common/res.html">
+		
+	</head>
+
+	<body>	
+		<!-- 头部-start -->
+		<#include "./common/header.html">
+		<!-- 头部-end -->
+		
+		<div class="f-main clearfix">
+			
+			<!-- 一级分类  start-->
+			<div class="course-nav-row clearfix">
+				<span class="hd">direction：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				<ul class="course-nav">
+					<li class="course-nav-item <#if curCode?? && curCode=='-1'>cur-course-nav</#if> ">
+						<a href="javascript:void(0)" onClick="_queryPage(1,'-1')">ALL</a>
+					</li>
+					<#if classifys??>
+					<#list classifys as item>
+					<li class="course-nav-item <#if curCode?? && curCode == item.code>cur-course-nav</#if>">
+						<a href="javascript:void(0)" onClick="_queryPage(1,'${item.code!}')">${item.name!}</a>
+					</li>
+					</#list>
+					</#if>
+				</ul>
+			</div>
+			<!-- 一级分类  end-->
+			
+			<!-- 二级分类 start -->
+			<div class="course-nav-row clearfix">
+				<span class="hd">classification：</span>
+				<ul class="course-nav">
+					<li class="course-nav-item <#if curSubCode?? && curSubCode=='-2'>cur-course-nav</#if>">
+						<a href="javascript:void(0)" onClick="_queryPage(1,'-2')">ALL</a>
+					</li>
+					<#if subClassifys??>
+					<#list subClassifys as item>
+					<li class="course-nav-item <#if curSubCode?? && curSubCode == item.code>cur-course-nav</#if>">
+						<a href="javascript:void(0)" onClick="_queryPage(1,'${item.code!}')">${item.name!}</a>
+					</li>
+					</#list>
+					</#if>
+				</ul>
+			</div>
+			<!-- 二级分类 end -->		
+			
+			<!-- 课程列表及分页 start	 -->
+			<div class="types-block clearfix" style="padding:0px;">
+				<h3 style="margin-bottom: 20px;">	
+					<span class="types-title" style="margin-right:40px;">COURSE LIST</span>
+					<a href="javascript:void(0)" style="display: inline-block;margin-right:20px;" onclick="_queryPage(1,undefined,'last')">
+					<span <#if sort?? && sort=='last'>class="color-oc"</#if> >THE MOST NOVEL</span>
+					</a>
+					<a href="javascript:void(0)" style="display: inline-block;" onclick="_queryPage(1,undefined,'pop')">
+					<span <#if sort?? && sort=='pop'>class="color-oc"</#if> >THE MOST POPULAR</span>
+					</a>
+				</h3>
+				<div class="types-content clearfix" style="margin-bottom: 20px;">
+					<#if (page.items)??>
+					<div>
+					<#list page.items as item>
+					<#assign n = item_index + 1 />
+					<a href="/course/learn/${item.id}.html" target="_black">
+						<div class="course-card-container"  <#if n %5 == 0>style="margin-right: 0px;" </#if> >
+							<#if n %5 == 0>
+							<div class="course-card-top green-bg">
+							<#elseif n %4 == 0>
+							<div class="course-card-top pink-bg">
+							<#elseif n %3 == 0>
+							<div class="course-card-top purple-bg">
+							<#elseif n %2 == 0>
+							<div class="course-card-top gray-bg">
+							<#else>
+							<div class="course-card-top brown-bg">
+							</#if>
+								<span>${item.subClassifyName!}</span>
+							</div>
+
+							<div class="course-card-content">
+								<h3 class="course-card-name" title="${item.name!}">${item.name!}</h3>
+								<p  class="course-card-brief" title="${item.brief!}">${item.brief!}</p>
+								<div class="course-card-bottom">
+									<#if item.free == 1>
+									<div class="course-card-info">
+									<#if item.level == 1>
+									Primary
+									<#elseif item.level == 2>
+									Intermediate
+									<#else>
+									Senior
+									</#if>
+									<span>·</span>${item.studyCount!}people are learning
+									</div>
+									<#else>
+									<div class="course-card-info">${item.studyCount!}people are learning</div>
+									<div class="course-card-price">￥${item.price!}</div>
+									</#if>
+								</div>
+							</div>
+						</div>
+					</a>
+					</#list>
+					</div>
+					
+					<#include "./common/tailPage.html">
+					</#if>
+				</div>
+			</div>
+			<!-- 课程列表及分页 end	 -->
+		</div>	
+							
+		<!-- 页脚-start -->
+		<#include "./common/footer.html"> 
+		<!-- 页脚-end-->
+	
+		<script type="text/javascript">
+			var _code = '${curCode}';
+			var _subCode = '${curSubCode}';
+			var _sort = '${sort!}';
+			
+			function _queryPage(pageNum,code,sort){
+				var params = '?pageNum='+pageNum;
+				//分类，参数没有就用页面缓存 
+				if(code == undefined){//来自于分页按钮
+					code = _code;
+					if(_subCode != '-2'){
+						code = _subCode; //优先使用 subCode 
+					}
+				}
+				if(code == '-2'){//点击分类的全部
+					code = _code;
+				}
+				if(code != '-1' && code != ''){
+					params += '&c='+code;
+				}
+				
+				//排序，函数参数没有就用页面缓存 
+				if(sort == undefined && _sort != ''){
+					sort = _sort;
+				}
+				if(sort != undefined){
+					params += '&sort='+sort;
+				}
+				window.location.href='/course/list.html'+params;
+			}
+		</script>
+	</body>
+	
+</html>

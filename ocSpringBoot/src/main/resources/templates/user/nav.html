@@ -1,0 +1,39 @@
+<img id="userNavHeader" class="setting-header" src=''></img>  <!-- src欠缺 -->
+	<div><@shiro.principal property="username"/></div>
+<div class="split-line" style="margin-bottom: 20px;"></div>
+
+<ul class="user-menu-nav-block">
+	<a href="/user/home.html">
+		<li <#if curNav?? && curNav =="home">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if>>Homepage <span>&gt;</span></li>
+	</a>
+	<a href="/user/course.html">
+		<li <#if curNav?? && curNav =="course">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if> >My courses <span>&gt;</span></li>
+	</a>
+	<a href="/user/collect.html">
+		<li <#if curNav?? && curNav =="collect">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if> >My collection<span>&gt;</span></li>
+	</a>
+	<a href="/user/info.html">
+		<li <#if curNav?? && curNav =="info">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if> >Personal information <span>&gt;</span></li>
+	</a>
+	<a href="/user/passwd.html">
+		<li <#if curNav?? && curNav =="passwd">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if> >Change password  <span>&gt;</span></li>
+	</a>
+	<a href="/user/qa.html">
+		<li <#if curNav?? && curNav =="qa">class="user-menu-nav-cur"<#else>class="user-menu-nav"</#if> >Answer questions  <span>&gt;</span></li>
+	</a>
+</ul>
+<script type="text/javascript">
+	$(function(){
+		$('.user-menu-nav').hover(function(){
+			$(this).find('span').css('color','#0089D2');
+		},function(){
+			$(this).find('span').css('color','#777');
+		});
+		
+		var headPhoto = $('#userNavHeader').attr('src');
+		if(headPhoto == null || headPhoto == '' || headPhoto == 'null'){
+			var headPhoto = "<@shiro.principal property="header"/>";
+			$('#userNavHeader').attr('src',headPhoto);
+		}
+	});	
+</script>

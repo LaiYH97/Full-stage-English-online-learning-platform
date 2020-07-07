@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<title>Full - level English online learning platform</title>
+		<#include "../common/res.html">
+	</head>
+
+	<body>
+		<#include "../common/header2.html">
+		<div class="f-main-login">
+			<div class="types-block clearfix" style="text-align: center;">
+				<h3 class="types-title">Register</h3>
+				<form id="registerForm" method="post" action="/auth/doRegister.html" class="oc-form"  style="text-align: center;border: 2px solid #000;width: 600px;margin:0 auto;padding:20px;" >
+						<li><label>User name</label> 
+							<input maxlength="20" id="username" name="username"  type="text"  class="input-text"  placeholder="请输入用户名（英文或数字）" >
+						</li>
+						<li><label>Password</label> 
+							<input maxlength="20" id="password" name="password" type="password" class="input-text" placeholder="请输入密码" autocomplete="off" />
+						</li>
+						<li><label>Verification code</label> 
+						<input id="identiryCode" name="identiryCode" maxlength="6" class="input-text" type="text" style="width: 150px;" placeholder="请输入验证码"/>
+						<a class="vali-base"><img  onclick="reloadIndityImg('indeityImgRegister');" id="indeityImgRegister"  src="/tools/identiry/code.html" style="width:80px;height:40px;float:left;margin-left:70px;"/></a>
+						</li>
+						<li id="errorMsg" class="clearfix" style="display: none;color:red;margin-left:85px;">The username and password cannot be null</li>
+						<li class="clearfix" style="margin-top: 30px;">
+							<input type="button" value="Register" class="btn" onclick="doSubmit();">
+						</li>
+						<li>
+							<a style="float: left;" href="/auth/login.html">You have an account, to log in</a>
+						</li>
+					</form>
+			</div>
+		</div>
+		<#include "../common/footer.html">
+		
+		<script type="text/javascript">
+		function doSubmit(){
+			var username = $('#username').val();
+			var password = $('#password').val();
+			
+			//验证用户名 
+			if(!oc.enNumValid(username)){
+				$('#errorMsg').show();
+				$('#errorMsg').html("Username can only be in English or numeric");
+				return;
+			}
+			
+			//验证密码
+			if(oc.isEmpty(password) || password.length < 6){
+				$('#errorMsg').show();
+				$('#errorMsg').html("Password at least 6 digits");
+				return;
+			}
+			
+			//验证码不能为空
+			var code = $('#identiryCode').val();
+			if(oc.isEmpty(code)){
+				$('#errorMsg').show();
+				$('#errorMsg').html("Please enter the verification code");
+				return;
+			}
+			
+			//提交注册
+			$('#registerForm').ajaxSubmit({
+				datatype : 'json',
+				success : function(respText) {
+					var resp = $.parseJSON(respText);
+					if (resp.errcode == 0) {
+						$('#errorMsg').show();
+						$('#errorMsg').html("Registration successful! Skip to landing page after 3s!");
+						setTimeout(function(){
+							window.location.href="/auth/login.html";
+						},3000)
+					} else if(resp.errcode == 1) {
+						$('#errorMsg').show();
+						$('#errorMsg').html("The user name has been registered, please change it!");
+					}else if(resp.errcode == 2){
+						$('#errorMsg').show();
+						$('#errorMsg').html("Verification code input error!");
+						reloadIndityImg('indeityImgRegister');
+					}
+				},
+				error : function(xhr) {
+					
+				}
+			});
+			
+		}	
+	</script>
+	</body>
+	
+</html>
